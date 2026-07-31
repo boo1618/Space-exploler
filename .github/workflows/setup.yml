@@ -1,0 +1,27 @@
+name: Setup Project Structure
+on: [push, workflow_dispatch]
+jobs:
+  build-structure:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          # 1. Sabse pehle alag se public folder
+          mkdir -p public
+          
+          # 2. Fir src folder aur uske andar ke saare sub-folders
+          mkdir -p src/pages src/lib src/hooks src/components/ui
+          
+          # 3. Dummy files taaki GitHub empty folders ko delete na kare
+          echo "/* CSS */" > src/index.css
+          echo "export const config = {}" > src/lib/utils.ts
+          echo "import React from 'react'; export const Card = () => null;" > src/components/ui/card.tsx
+          echo "<!-- Space Explorer -->" > index.html
+      - name: Save Folders to GitHub
+        run: |
+          git config --global user.name 'GitHub Action'
+          git config --global user.email 'action@github.com'
+          git add .
+          git commit -am "Created separate public and src folder structure" || true
+          git push
+          
